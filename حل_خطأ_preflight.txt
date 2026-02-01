@@ -1,0 +1,27 @@
+========================================
+  حل خطأ: preflight.css مفقود (أو EPERM)
+========================================
+
+السبب: المشروع داخل OneDrive (مثل Desktop) والمزامنة تقفل أو تحذف ملفات node_modules.
+
+الحل الوحيد الموثوق:
+------------------------
+1) انسخ المشروع بالكامل إلى مجلد غير مزامن:
+
+   في PowerShell (كمسؤول إن احتجت):
+   mkdir C:\dev -ErrorAction SilentlyContinue
+   xcopy /E /I /H /Y "C:\Users\Dell\OneDrive\Desktop\tomo-market-v2" "C:\dev\tomo-market-v2"
+
+2) افتح المشروع من المسار الجديد:
+   cd C:\dev\tomo-market-v2
+
+3) شغّل سكربت الإصلاح:
+   .\tools\windows\fix-npm-eperm.ps1
+
+4) إن ظهرت رسالة "لا يمكن تنفيذ السكربتات":
+   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+   ثم أعد تشغيل: .\tools\windows\fix-npm-eperm.ps1
+
+بعد ذلك اعمل من C:\dev\tomo-market-v2 (لا تعود للعمل من Desktop/OneDrive للبناء).
+
+========================================

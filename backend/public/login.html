@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>تسجيل الدخول - TOMO Market</title>
+  <style>
+    body {
+      font-family: system-ui, Arial;
+      background: #f5f5f5;
+      margin: 0;
+    }
+    header {
+      background: #2e7d32;
+      color: white;
+      padding: 12px 20px;
+      font-size: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    main {
+      max-width: 480px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      margin-top: 16px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      background: #2e7d32;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button.secondary {
+      background: #555;
+    }
+    .switch {
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    .switch a {
+      color: #2e7d32;
+      cursor: pointer;
+    }
+    .message {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    .error {
+      color: #c62828;
+    }
+    .success {
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span>TOMO Market 🛒</span>
+  <a href="index.html">الصفحة الرئيسية</a>
+</header>
+
+<main>
+  <h2 id="formTitle">تسجيل حساب جديد</h2>
+
+  <div id="registerForm">
+    <label>الاسم</label>
+    <input id="regName" type="text" />
+
+    <label>البريد الإلكتروني</label>
+    <input id="regEmail" type="email" />
+
+    <label>كلمة المرور</label>
+    <input id="regPassword" type="password" />
+
+    <button onclick="register()">إنشاء حساب</button>
+  </div>
+
+  <div id="loginForm" style="display:none">
+    <label>البريد الإلكتروني</label>
+    <input id="loginEmail" type="email" />
+
+    <label>كلمة المرور</label>
+    <input id="loginPassword" type="password" />
+
+    <button onclick="login()">تسجيل الدخول</button>
+  </div>
+
+  <div class="switch">
+    <span id="switchText">
+      لديك حساب؟ <a onclick="showLogin()">تسجيل الدخول</a>
+    </span>
+  </div>
+
+  <div id="msg" class="message"></div>
+</main>
+
+<script>
+  // Prod: same origin (backend serves this page). Dev: override via window.__API_BASE__ or default localhost.
+  const API_BASE = (typeof window !== 'undefined' && window.__API_BASE__)
+    ? window.__API_BASE__
+    : (typeof location !== 'undefined' && location.origin
+      ? location.origin  // prod: use same origin + /api
+      : 'http://localhost:3000');
+
+  function showLogin() {
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('formTitle').innerText = 'تسجيل الدخول';
+    document.getElementById('switchText').innerHTML =
+      'ليس لديك حساب؟ <a onclick="showRegister()">إنشاء حساب</a>';
+    document.getElementById('msg').innerText = '';
+  }
+
+  function showRegister() {
+    document.getElementById('registerForm').style.display = 'block';
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('formTitle').innerText = 'تسجيل حساب جديد';
+    document.getElementById('switchText').innerHTML =
+      'لديك حساب؟ <a onclick="showLogin()">تسجيل الدخول</a>';
+    document.getElementById('msg').innerText = '';
+  }
+
+  async function register() {
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+
+    if (!name || !email || !password) {
+      showMessage('يرجى تعبئة جميع الحقول', true);
+      return;
+    }
+
+    try {
+      const res = await fetch(API_BASE + '/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showMessage(data.message || 'حدث خطأ في التسجيل', true);
+        return;
+      }
+
+      // في الكود الحالي عندك السيرفر يرجّع user + token على الأغلب
+      if (data.token) {
+        localStorage.setItem('tomo_token', data.token);
+        localStorage.setItem('tomo_user', JSON.stringify(data.user || {}));
+      }
+
+      showMessage('تم إنشاء الحساب بنجاح ✅ سيتم تحويلك للمتجر...', false);
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1200);
+    } catch (err) {
+      console.error(err);
+      showMessage('مشكلة اتصال بالسيرفر', true);
+    }
+  }
+
+  async function login() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+      showMessage('يرجى إدخال البريد وكلمة المرور', true);
+      return;
+    }
+
+    try {
+      const res = await fetch(API_BASE + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showMessage(data.message || 'بيانات الدخول غير صحيحة', true);
+        return;
+      }
+
+      if (data.token) {
+        localStorage.setItem('tomo_token', data.token);
+        localStorage.setItem('tomo_user', JSON.stringify(data.user || {}));
+      }
+
+      showMessage('تم تسجيل الدخول بنجاح ✅ سيتم تحويلك للمتجر...', false);
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1200);
+    } catch (err) {
+      console.error(err);
+      showMessage('مشكلة اتصال بالسيرفر', true);
+    }
+  }
+
+  function showMessage(msg, isError) {
+    const el = document.getElementById('msg');
+    el.innerText = msg;
+    el.className = 'message ' + (isError ? 'error' : 'success');
+  }
+</script>
+</body>
+</html>

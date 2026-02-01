@@ -1,0 +1,22 @@
+# Upload Header and Footer to Server
+$server = "root@138.68.245.29"
+$remotePath = "/var/www/tomo-app/frontend"
+
+Write-Host "📤 Encoding and uploading Header.tsx..." -ForegroundColor Cyan
+$headerContent = Get-Content frontend\src\components\Header.tsx -Raw -Encoding UTF8
+$headerBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($headerContent))
+ssh $server "echo '$headerBase64' | base64 -d > ${remotePath}/src/components/Header.tsx"
+
+Write-Host "📤 Encoding and uploading Footer.tsx..." -ForegroundColor Cyan
+$footerContent = Get-Content frontend\src\components\Footer.tsx -Raw -Encoding UTF8
+$footerBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($footerContent))
+ssh $server "echo '$footerBase64' | base64 -d > ${remotePath}/src/components/Footer.tsx"
+
+Write-Host "🔨 Building Frontend on server..." -ForegroundColor Cyan
+ssh $server "cd $remotePath; npm run build"
+
+Write-Host "🔧 Fixing permissions..." -ForegroundColor Cyan
+ssh $server "chmod -R 755 ${remotePath}/dist; chown -R www-data:www-data ${remotePath}/dist; systemctl reload nginx"
+
+Write-Host "✅ Done! Header and Footer are now white on tomo-sa.com" -ForegroundColor Green
+

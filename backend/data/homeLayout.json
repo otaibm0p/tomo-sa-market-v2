@@ -1,0 +1,64 @@
+{
+  "sections": [
+    {
+      "id": "main-banner",
+      "type": "banner",
+      "active": true,
+      "slides": [
+        { "id": 1, "image": "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80", "title": "عروض طازجة", "subtitle": "خصم يصل إلى 50%" },
+        { "id": 2, "image": "https://images.unsplash.com/photo-1604719312566-b76d46856327?auto=format&fit=crop&w=800&q=80", "title": "عروض رمضان", "subtitle": "أساسيات مائدتك" }
+      ]
+    },
+    {
+      "id": "categories-circle",
+      "type": "categories",
+      "active": true,
+      "title": "Shop by Category",
+      "titleAr": "تسوق حسب الفئة",
+      "titleEn": "Categories"
+    },
+    {
+      "id": "featured-products",
+      "type": "product-row",
+      "active": true,
+      "title": "Featured Products",
+      "titleAr": "منتجات مميزة ⭐",
+      "titleEn": "Featured Products",
+      "filter": "featured",
+      "categoryId": null,
+      "limit": 10
+    },
+    {
+      "id": "best-sellers",
+      "type": "product-row",
+      "active": true,
+      "title": "Best Sellers",
+      "titleAr": "الأكثر مبيعاً 🔥",
+      "titleEn": "Best Sellers",
+      "filter": "best_sellers",
+      "categoryId": null,
+      "limit": 10
+    },
+    {
+      "id": "new-arrivals",
+      "type": "product-row",
+      "active": true,
+      "title": "New Arrivals",
+      "titleAr": "وصل حديثاً ✨",
+      "titleEn": "New Arrivals",
+      "filter": "new",
+      "categoryId": null,
+      "limit": 10
+    },
+    {
+      "id": "main-grid",
+      "type": "product-grid",
+      "active": true,
+      "title": "All Products",
+      "titleAr": "جميع المنتجات",
+      "titleEn": "All Products",
+      "filter": "all",
+      "categoryId": null
+    }
+  ]
+}

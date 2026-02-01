@@ -1,0 +1,61 @@
+═══════════════════════════════════════════════════════════════
+  نقل الهيدر والفوتر إلى السيرفر (أبيض)
+═══════════════════════════════════════════════════════════════
+
+المشكلة: SSH config يحتوي على خطأ
+
+الحل: انسخ الملفات يدوياً أو استخدم الأوامر التالية على السيرفر:
+
+───────────────────────────────────────────────────────────────
+الطريقة 1: استخدام FileZilla/WinSCP
+───────────────────────────────────────────────────────────────
+
+1. افتح FileZilla أو WinSCP
+2. اتصل بـ: 138.68.245.29 (root)
+3. انقل الملفات:
+   - frontend/src/components/Header.tsx
+   - frontend/src/components/Footer.tsx
+   
+   إلى: /var/www/tomo-app/frontend/src/components/
+
+4. على السيرفر، نفذ:
+   cd /var/www/tomo-app/frontend
+   npm run build
+   chmod -R 755 dist
+   chown -R www-data:www-data dist
+   systemctl reload nginx
+
+───────────────────────────────────────────────────────────────
+الطريقة 2: استخدام الأوامر مباشرة على السيرفر
+───────────────────────────────────────────────────────────────
+
+انسخ محتوى ملف create-files-on-server.sh إلى السيرفر:
+
+1. SSH إلى السيرفر:
+   ssh root@138.68.245.29
+
+2. أنشئ الملف:
+   nano /tmp/create-files.sh
+
+3. الصق محتوى create-files-on-server.sh
+
+4. احفظ واخرج (Ctrl+X, Y, Enter)
+
+5. نفذ:
+   chmod +x /tmp/create-files.sh
+   bash /tmp/create-files.sh
+
+───────────────────────────────────────────────────────────────
+الملفات المعدلة محلياً:
+───────────────────────────────────────────────────────────────
+
+✅ frontend/src/components/Header.tsx (أبيض)
+✅ frontend/src/components/Footer.tsx (أبيض)
+
+التغييرات:
+- Header: bg-white shadow-sm border-b border-gray-100
+- Footer: bg-white border-t border-gray-200 text-gray-800
+- "تسوق حسب الفئة" موجود في homeLayout.json
+
+═══════════════════════════════════════════════════════════════
+

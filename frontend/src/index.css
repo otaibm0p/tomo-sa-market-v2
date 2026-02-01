@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: var(--tomo-green, #047857);
+  --primary-light: var(--tomo-green-light, #059669);
+  --primary-dark: var(--tomo-green-dark, #065f46);
+  --bg-page: var(--bg-page, #f8fafc);
+  --surface: var(--surface-card, #ffffff);
+  --border: #f1f5f9;
+  --text: #0f172a;
+  --text-muted: #64748b;
+}
+
+/* Arabic-first: IBM Plex Sans Arabic; English: Inter */
+body {
+  font-family: var(--font-ar);
+  background-color: var(--bg-page);
+  color: var(--text-primary, #0f172a);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[lang="en"] {
+  font-family: var(--font-en);
+}
+
+/* Admin shell: RTL + Arabic font; premium Operating OS look */
+.admin-shell {
+  font-family: var(--font-ar);
+  --admin-text-strong: rgb(15 23 42);
+  --admin-text-muted: rgb(71 85 105);
+}
+.admin-shell[lang="en"] {
+  font-family: var(--font-en);
+}
+
+/* Admin base typography: slightly larger, stronger contrast (visual only) */
+.admin-shell {
+  font-size: 15px;
+  color: var(--admin-text-strong);
+}
+.admin-shell h1, .admin-shell h2, .admin-shell h3 {
+  color: var(--admin-text-strong);
+  font-weight: 700;
+}
+.admin-shell .text-admin-muted,
+.admin-shell [class*="text-gray-500"],
+.admin-shell [class*="text-gray-600"].admin-muted-fallback {
+  color: var(--admin-text-muted);
+}
+
+/* Focus: TOMO green */
+*:focus-visible {
+  outline: 2px solid var(--tomo-green);
+  outline-offset: 2px;
+}
+
+/* Custom Scrollbar Hide */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Safe Area for Mobile */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Global Card: soft border + subtle shadow */
+.card-modern {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-100 transition-shadow duration-200;
+}
+
+.card-modern:hover {
+  @apply shadow-md;
+}
+
+/* Primary button: TOMO green */
+.btn-primary {
+  @apply bg-[#047857] text-white font-semibold rounded-xl shadow-sm transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2;
+}
+
+.btn-primary:hover {
+  @apply bg-[#065f46] shadow-md;
+}
+
+.btn-primary:disabled {
+  @apply opacity-50 cursor-not-allowed transform-none;
+}
+
+/* Safe Dark Accents (admin only): reversible; content surfaces stay light; primary #047857 unchanged */
+html[data-admin-theme="dark_accents"] .admin-mission-bar {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+html[data-admin-theme="dark_accents"] .admin-mission-bar .admin-mission-bar-label,
+html[data-admin-theme="dark_accents"] .admin-mission-bar .admin-mission-bar-time {
+  color: #f1f5f9;
+}
+html[data-admin-theme="dark_accents"] .admin-mission-bar .text-gray-500,
+html[data-admin-theme="dark_accents"] .admin-mission-bar .text-gray-600 {
+  color: #94a3b8;
+}
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar,
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar > div {
+  background: #1e293b !important;
+  border-color: #334155;
+}
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .text-gray-900,
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar [class*="text-gray-700"] {
+  color: #f1f5f9;
+}
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .text-gray-500,
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .text-gray-400 {
+  color: #94a3b8;
+}
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .bg-emerald-50 {
+  background: rgba(16, 185, 129, 0.18) !important;
+}
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .text-emerald-800,
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .text-emerald-900 {
+  color: #6ee7b7;
+}
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .admin-sidebar-active-indicator {
+  border-color: #047857;
+}
+.admin-sidebar-active-indicator {
+  border-color: #047857;
+}
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .bg-gray-100 {
+  background: #334155 !important;
+}
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .border-gray-100,
+html[data-admin-theme="dark_accents"] .admin-shell-sidebar .border-gray-200 {
+  border-color: #475569;
+}
+html[data-admin-theme="dark_accents"] .admin-table-head-row {
+  background: #334155;
+  border-color: #475569;
+  color: #f1f5f9;
+}
+html[data-admin-theme="dark_accents"] .admin-table-head-row th {
+  color: #cbd5e1;
+}

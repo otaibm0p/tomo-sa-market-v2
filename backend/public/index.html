@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <title>منتجات تجريبية - TOMO Market</title>
+    <style>
+        body {
+            font-family: system-ui, Arial;
+            margin: 0;
+            background: #f5f5f5;
+        }
+
+        header {
+            background: #2e7d32;
+            color: #fff;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .cart-icon {
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .products, .cart {
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 16px;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .product-price {
+            color: #2e7d32;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .product-desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            min-height: 32px;
+        }
+
+        button {
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-add {
+            background: #2e7d32;
+            color: #fff;
+            width: 100%;
+        }
+
+        .btn-add:hover {
+            background: #256427;
+        }
+
+        .cart-empty {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            padding: 6px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .qty-btn {
+            background: #eee;
+            padding: 2px 8px;
+        }
+
+        .qty-value {
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: #ff5252;
+            color: #fff;
+            padding: 2px 6px;
+        }
+
+        .cart-footer {
+            margin-top: 10px;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .total {
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        .checkout-btn {
+            background: #1976d2;
+            color: #fff;
+            padding: 6px 12px;
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .message.success {
+            color: #2e7d32;
+        }
+
+        .message.error {
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="title">تجربة متجر بقالة - TOMO Market 🛒</div>
+    <div class="cart-icon">سلة الطلبات</div>
+</header>
+
+<main>
+    <!-- قائمة المنتجات -->
+    <section class="products">
+        <h2>المنتجات</h2>
+        <div id="products" class="products-grid">
+            <!-- سيتم تعبئتها من الجافاسكربت -->
+        </div>
+        <p id="products-empty" class="cart-empty" style="display:none;">
+            حدث خطأ في جلب المنتجات أو لا توجد بيانات.
+        </p>
+    </section>
+
+    <!-- سلة المشتريات -->
+    <section class="cart">
+        <h2>سلة المشتريات</h2>
+        <div id="cart-items">
+            <p class="cart-empty">السلة فارغة، أضف بعض المنتجات 👍</p>
+        </div>
+        <div class="cart-footer">
+            <span class="total">الإجمالي: <span id="cart-total">0.00</span> ريال</span>
+            <button id="checkout-btn" class="checkout-btn" disabled>تأكيد الطلب (اختباري)</button>
+        </div>
+        <div id="cart-message" class="message"></div>
+    </section>
+</main>
+
+<script>
+    // ===== بيانات السلة في الذاكرة + التخزين المحلي =====
+    let cart = [];
+
+    const CART_KEY = "tomo_cart";
+
+    function loadCartFromStorage() {
+        try {
+            const stored = localStorage.getItem(CART_KEY);
+            if (stored) {
+                cart = JSON.parse(stored);
+            }
+        } catch (e) {
+            console.error("Error reading cart from storage", e);
+        }
+    }
+
+    function saveCartToStorage() {
+        try {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        } catch (e) {
+            console.error("Error saving cart to storage", e);
+        }
+    }
+
+    // ===== عرض المنتجات في الصفحة =====
+    const productsContainer = document.getElementById("products");
+    const productsEmpty = document.getElementById("products-empty");
+
+    async function loadProducts() {
+        try {
+            const res = await fetch("/api/products");
+            if (!res.ok) {
+                throw new Error("Failed to fetch products");
+            }
+            const data = await res.json();
+            renderProducts(data);
+        } catch (err) {
+            console.error(err);
+            productsEmpty.style.display = "block";
+        }
+    }
+
+    function renderProducts(products) {
+        if (!Array.isArray(products) || products.length === 0) {
+            productsEmpty.style.display = "block";
+            return;
+        }
+        productsEmpty.style.display = "none";
+        productsContainer.innerHTML = "";
+
+        products.forEach(p => {
+            const card = document.createElement("div");
+            card.className = "product-card";
+
+            const name = document.createElement("div");
+            name.className = "product-name";
+            name.textContent = p.name || "منتج بدون اسم";
+
+            const price = document.createElement("div");
+            price.className = "product-price";
+            const amount = Number(p.price || p.unit_price || 0).toFixed(2);
+            price.textContent = `${amount} ريال`;
+
+            const desc = document.createElement("div");
+            desc.className = "product-desc";
+            desc.textContent = p.description || "منتج تجريبي من قاعدة البيانات";
+
+            const btn = document.createElement("button");
+            btn.className = "btn-add";
+            btn.textContent = "إضافة للسلة";
+            btn.onclick = () => addToCart(p);
+
+            card.appendChild(name);
+            card.appendChild(price);
+            card.appendChild(desc);
+            card.appendChild(btn);
+
+            productsContainer.appendChild(card);
+        });
+    }
+
+    // ===== إدارة السلة =====
+    const cartItemsDiv = document.getElementById("cart-items");
+    const cartTotalSpan = document.getElementById("cart-total");
+    const checkoutBtn = document.getElementById("checkout-btn");
+    const cartMessage = document.getElementById("cart-message");
+
+    function addToCart(product) {
+        const id = product.id;
+        if (!id) {
+            alert("لا يمكن إضافة منتج بدون رقم تعريفي (id). تأكد من جدول قاعدة البيانات.");
+            return;
+        }
+
+        const price = Number(product.price || product.unit_price || 0);
+
+        const existing = cart.find(item => item.id === id);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({
+                id,
+                name: product.name || "منتج",
+                price,
+                quantity: 1
+            });
+        }
+        saveCartToStorage();
+        renderCart();
+    }
+
+    function changeQuantity(id, delta) {
+        const item = cart.find(i => i.id === id);
+        if (!item) return;
+
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+            cart = cart.filter(i => i.id !== id);
+        }
+        saveCartToStorage();
+        renderCart();
+    }
+
+    function removeFromCart(id) {
+        cart = cart.filter(i => i.id !== id);
+        saveCartToStorage();
+        renderCart();
+    }
+
+    function calcTotal() {
+        return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    }
+
+    function renderCart() {
+        cartItemsDiv.innerHTML = "";
+        cartMessage.textContent = "";
+        cartMessage.className = "message";
+
+        if (!cart.length) {
+            cartItemsDiv.innerHTML = '<p class="cart-empty">السلة فارغة، أضف بعض المنتجات 👍</p>';
+            cartTotalSpan.textContent = "0.00";
+            checkoutBtn.disabled = true;
+            return;
+        }
+
+        cart.forEach(item => {
+            const row = document.createElement("div");
+            row.className = "cart-item";
+
+            const info = document.createElement("div");
+            info.className = "cart-item-info";
+
+            const name = document.createElement("div");
+            name.className = "cart-item-name";
+            name.textContent = item.name;
+
+            const details = document.createElement("div");
+            details.textContent = `${item.price.toFixed(2)} ريال × ${item.quantity}`;
+
+            info.appendChild(name);
+            info.appendChild(details);
+
+            const controls = document.createElement("div");
+            controls.className = "cart-item-controls";
+
+            const btnPlus = document.createElement("button");
+            btnPlus.className = "qty-btn";
+            btnPlus.textContent = "+";
+            btnPlus.onclick = () => changeQuantity(item.id, +1);
+
+            const qtySpan = document.createElement("span");
+            qtySpan.className = "qty-value";
+            qtySpan.textContent = item.quantity;
+
+            const btnMinus = document.createElement("button");
+            btnMinus.className = "qty-btn";
+            btnMinus.textContent = "−";
+            btnMinus.onclick = () => changeQuantity(item.id, -1);
+
+            const removeBtn = document.createElement("button");
+            removeBtn.className = "remove-btn";
+            removeBtn.textContent = "حذف";
+            removeBtn.onclick = () => removeFromCart(item.id);
+
+            controls.appendChild(btnPlus);
+            controls.appendChild(qtySpan);
+            controls.appendChild(btnMinus);
+            controls.appendChild(removeBtn);
+
+            row.appendChild(info);
+            row.appendChild(controls);
+            cartItemsDiv.appendChild(row);
+        });
+
+        const total = calcTotal();
+        cartTotalSpan.textContent = total.toFixed(2);
+        checkoutBtn.disabled = false;
+    }
+
+    // ===== إرسال الطلب (اختباري) =====
+    async function checkout() {
+        if (!cart.length) return;
+
+        cartMessage.textContent = "";
+        cartMessage.className = "message";
+
+        const payload = {
+            items: cart.map(item => ({
+                product_id: item.id,
+                quantity: item.quantity,
+                unit_price: item.price
+            }))
+        };
+
+        try {
+            const res = await fetch("/api/orders", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                // لو ما عندك مسار /api/orders في الباك-إند، سيصل هنا
+                throw new Error("Order endpoint not available");
+            }
+
+            const data = await res.json().catch(() => ({}));
+
+            cart = [];
+            saveCartToStorage();
+            renderCart();
+
+            cartMessage.textContent = data.message || "تم تسجيل الطلب بنجاح ✅";
+            cartMessage.classList.add("success");
+        } catch (err) {
+            console.warn("Checkout error (اختباري):", err.message);
+
+            // وضع تجريبي في حال ما فيه API للطلبات
+            cart = [];
+            saveCartToStorage();
+            renderCart();
+
+            cartMessage.textContent =
+                "تمت تجربة تأكيد الطلب محلياً. عند تجهيز API للطلبات سنربطه هنا ✅";
+            cartMessage.classList.add("success");
+        }
+    }
+
+    checkoutBtn.addEventListener("click", checkout);
+
+    // ===== تشغيل عند تحميل الصفحة =====
+    loadCartFromStorage();
+    renderCart();
+    loadProducts();
+</script>
+</body>
+</html>
+
+
