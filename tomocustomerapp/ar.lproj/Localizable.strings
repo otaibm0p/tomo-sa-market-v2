@@ -1,0 +1,41 @@
+/* 
+  Localizable.strings (Arabic)
+  tomocustomerapp
+*/
+
+/* App Title */
+"app_title" = "تومو";
+
+/* Tab Bar Items */
+"tab_home" = "الرئيسية";
+"tab_search" = "البحث";
+"tab_cart" = "السلة";
+"tab_orders" = "الطلبات";
+"tab_profile" = "حسابي";
+
+/* Navigation Titles */
+"home_title" = "الرئيسية";
+"search_title" = "البحث";
+"cart_title" = "السلة";
+"orders_title" = "الطلبات";
+"profile_title" = "حسابي";
+
+/* Profile Menu Items */
+"profile_edit" = "تعديل الملف الشخصي";
+"profile_addresses" = "العناوين";
+"profile_payment" = "طرق الدفع";
+"profile_notifications" = "الإشعارات";
+"profile_help" = "المساعدة والدعم";
+"profile_about" = "حول";
+"profile_logout" = "تسجيل الخروج";
+"profile_language" = "اللغة";
+"language_title" = "اختر اللغة";
+"language_english" = "الإنجليزية";
+"language_arabic" = "العربية";
+
+/* Home Screen */
+"home_delivery_location" = "موقع التوصيل";
+"home_search_placeholder" = "ابحث عن المنتجات...";
+"home_categories" = "الفئات";
+"home_featured_products" = "المنتجات المميزة";
+"home_see_all" = "عرض الكل";

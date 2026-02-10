@@ -1,0 +1,41 @@
+/* 
+  Localizable.strings (English)
+  tomocustomerapp
+*/
+
+/* App Title */
+"app_title" = "TOMO";
+
+/* Tab Bar Items */
+"tab_home" = "Home";
+"tab_search" = "Search";
+"tab_cart" = "Cart";
+"tab_orders" = "Orders";
+"tab_profile" = "Profile";
+
+/* Navigation Titles */
+"home_title" = "Home";
+"search_title" = "Search";
+"cart_title" = "Cart";
+"orders_title" = "Orders";
+"profile_title" = "Profile";
+
+/* Profile Menu Items */
+"profile_edit" = "Edit Profile";
+"profile_addresses" = "Addresses";
+"profile_payment" = "Payment Methods";
+"profile_notifications" = "Notifications";
+"profile_help" = "Help & Support";
+"profile_about" = "About";
+"profile_logout" = "Logout";
+"profile_language" = "Language";
+"language_title" = "Select Language";
+"language_english" = "English";
+"language_arabic" = "Arabic";
+
+/* Home Screen */
+"home_delivery_location" = "Delivery Location";
+"home_search_placeholder" = "Search products...";
+"home_categories" = "Categories";
+"home_featured_products" = "Featured Products";
+"home_see_all" = "See All";

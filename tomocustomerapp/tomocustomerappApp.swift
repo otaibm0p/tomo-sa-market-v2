@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct tomocustomerappApp: App {
+    @StateObject private var languageManager = LanguageManager.shared
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootTabView()
+                .environmentObject(languageManager)
+                .id(languageManager.currentLanguage) // Force refresh on language change
         }
     }
 }
