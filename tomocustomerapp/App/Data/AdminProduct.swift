@@ -31,6 +31,14 @@ struct AdminProduct: Codable, Identifiable {
         if let primaryImage, !primaryImage.isEmpty { return primaryImage }
         return images.first
     }
+    
+    // ✅ Multi-image support (backward compatible)
+    var allImages: [String] {
+        if !images.isEmpty { return images }
+        // Backward compatibility: if single imageUrl exists, use it
+        if let single = resolvedPrimaryImage, !single.isEmpty { return [single] }
+        return []
+    }
 }
 
 // MARK: - Compatibility Extensions

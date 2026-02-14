@@ -8,5 +8,8 @@ enum AppTab: Hashable {
 @MainActor
 final class AppUIState: ObservableObject {
     @Published var selectedTab: AppTab = .home
-    init() {}
+    
+    init(selectedTab: AppTab = .home) {
+        self.selectedTab = selectedTab
+    }
 }

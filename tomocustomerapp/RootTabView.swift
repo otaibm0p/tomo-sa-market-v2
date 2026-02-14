@@ -48,7 +48,7 @@ struct RootTabView: View {
         }
         .tabViewStyle(.automatic)
         .accentColor(Color(red: 0.2, green: 0.6, blue: 0.3))
-        .onChange(of: uiState.selectedTab) { _ in
+        .onChange(of: uiState.selectedTab) { _, _ in
             router.reset()
         }
         .environment(\.layoutDirection, languageManager.currentLanguage.isRTL ? .rightToLeft : .leftToRight)

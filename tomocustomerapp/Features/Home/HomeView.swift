@@ -33,6 +33,7 @@ struct HomeView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var router: AppRouter
     @EnvironmentObject var cart: TomoCartManager
+    @EnvironmentObject var uiState: AppUIState
 
     // ✅ VM جديد للأقسام/المنتجات (جاهز للربط مع Admin لاحقاً)
     @State private var catalogVM = CatalogViewModel(repo: MockCatalogRepository())
@@ -42,26 +43,49 @@ struct HomeView: View {
     @State private var cartBottomBarDismissed: Bool = false
     @State private var lastCartItemCount: Int = 0
 
+    private var isAr: Bool { languageManager.isArabic }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // 1) Header
-                HeaderSection()
-                    .padding(.top, 8)
+                // 1) Premium Header
+                PremiumHeader(
+                    title: "TOMO",
+                    subtitle: isAr ? "توصيل سريع وذكي" : "Smart & fast delivery",
+                    ordersTitle: isAr ? "الطلبات" : "Orders",
+                    onOrders: { uiState.selectedTab = .orders },
+                    onNotifications: { /* لاحقًا */ }
+                )
                 
                 // 2) Search Bar
                 SearchSection(searchText: $searchText)
                 
-                // 3) Banner Slider
-                if !homeVM.banners.isEmpty {
-                    BannerSection(banners: homeVM.banners)
+                // 3) Content or Skeleton
+                if catalogVM.featured.isEmpty && catalogVM.categories.isEmpty {
+                    VStack(spacing: 14) {
+                        SkeletonBox(height: 44, cornerRadius: 14)
+                        SkeletonBox(height: 120, cornerRadius: 22)
+                        HStack(spacing: 12) {
+                            SkeletonCircle(size: 56)
+                            SkeletonCircle(size: 56)
+                            SkeletonCircle(size: 56)
+                            SkeletonCircle(size: 56)
+                        }
+                        SkeletonBox(height: 180, cornerRadius: 22)
+                    }
+                    .padding(.horizontal, 16)
+                } else {
+                    // 3) Banner Slider
+                    if !homeVM.banners.isEmpty {
+                        BannerSection(banners: homeVM.banners)
+                    }
+                    
+                    // 4) Categories Grid
+                    CategoriesGridSection(categories: catalogVM.categories)
+                    
+                    // 5) Featured Products
+                    FeaturedProductsSection(products: catalogVM.featured)
                 }
-                
-                // 4) Categories Grid
-                CategoriesGridSection(categories: catalogVM.categories)
-                
-                // 5) Featured Products
-                FeaturedProductsSection(products: catalogVM.featured)
             }
             .padding(.vertical, 12)
         }
@@ -69,7 +93,7 @@ struct HomeView: View {
             await catalogVM.loadHome()
             await homeVM.loadHome()
         }
-        .onChange(of: cart.itemCount) { oldValue, newValue in
+        .onChange(of: cart.itemCount) { _, newValue in
             if newValue != lastCartItemCount {
                 cartBottomBarDismissed = false
                 lastCartItemCount = newValue

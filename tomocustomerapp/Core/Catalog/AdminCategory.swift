@@ -15,6 +15,10 @@ struct AdminCategory: Identifiable, Codable, Hashable {
     let image: String?     // URL لاحقاً من الادمن
     let sortOrder: Int
     let isActive: Bool
+    let parentId: String? // Parent category ID (nil for top-level)
+    
+    // Computed: children (built from flat list in repository)
+    var children: [AdminCategory] = []
 
     static func == (lhs: AdminCategory, rhs: AdminCategory) -> Bool { 
         lhs.id == rhs.id 
@@ -23,4 +27,10 @@ struct AdminCategory: Identifiable, Codable, Hashable {
     func hash(into hasher: inout Hasher) { 
         hasher.combine(id) 
     }
+    
+    // Helper: check if has children
+    var hasChildren: Bool { !children.isEmpty }
+    
+    // Helper: check if is top-level
+    var isTopLevel: Bool { parentId == nil }
 }

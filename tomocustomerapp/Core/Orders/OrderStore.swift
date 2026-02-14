@@ -9,6 +9,7 @@ final class OrderStore: ObservableObject {
 
     func seedMockIfNeeded() {
         guard orders.isEmpty else { return }
+        // Safe: no try! or forced unwrapping
         orders = [
             OrderModel(
                 id: "TOMO-1001",

@@ -15,24 +15,20 @@ struct ProductDetailsView: View {
     @Environment(\.dismiss) private var dismiss
 
     let product: AdminProduct
-    
-    @State private var qty: Int = 1
 
     private var isAr: Bool { languageManager.currentLanguage == .ar }
+    
+    // ✅ Helper to read current qty safely from cart
+    private var currentQty: Int {
+        cart.quantity(for: product)
+    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
 
-                // If you already have ProductGalleryView, keep it. Otherwise keep placeholder.
-                if !product.images.isEmpty {
-                    ProductGalleryView(images: product.images)
-                } else {
-                    RoundedRectangle(cornerRadius: 18)
-                        .fill(Color(.secondarySystemBackground))
-                        .frame(height: 220)
-                        .overlay(Image(systemName: "photo").foregroundColor(.secondary))
-                }
+                // Multi-image carousel
+                ProductImageCarousel(images: product.images, height: 220)
 
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 6) {
@@ -65,78 +61,98 @@ struct ProductDetailsView: View {
         }
         .navigationTitle(isAr ? "تفاصيل المنتج" : "Product Details")
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private var addToCartBar: some View {
-        // qty comes from your existing state (Int). If your file uses different name, update it.
-        let safeQty = max(1, qty)
-
-        return VStack(spacing: 10) {
-            Divider().opacity(0.4)
-
-            HStack(spacing: 12) {
-
-                // Quantity controls (fixed hit area)
-                HStack(spacing: 10) {
-                    Button {
-                        qty = max(1, qty - 1)
-                    } label: {
-                        Image(systemName: "minus.circle.fill")
-                            .font(.system(size: 22))
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
-
-                    Text("\(qty)")
-                        .font(.system(size: 16, weight: .bold))
-                        .frame(minWidth: 24)
-
-                    Button {
-                        qty += 1
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 22))
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-                .background(Color(.systemGray6))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .frame(width: 150) // ✅ prevents overlap with the button
-
-                // Add To Cart button (its own hit area)
-                Button {
-                    // A) Add to cart
-                    cart.add(product: product, quantity: safeQty)
-                    
-                    // B) Navigate to Cart tab
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                CartIconWithBadge(count: cart.totalItems) {
+                    router.popToRoot()
                     withAnimation {
                         uiState.selectedTab = .cart
                     }
-                    
-                    // C) Close ProductDetails
-                    dismiss()
-                } label: {
-                    Text(isAr ? "أضف إلى السلة" : "Add to Cart")
-                        .font(.system(size: 16, weight: .bold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
                 }
-                .buttonStyle(.plain)
-                .background(Color(.systemGreen).opacity(0.15))
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .contentShape(Rectangle()) // ✅ ensures tap registers only here
+            }
+        }
+    }
+
+    private var addToCartBar: some View {
+        let qty = currentQty
+
+        return VStack(spacing: 10) {
+            Divider().opacity(0.35)
+
+            HStack(spacing: 12) {
+
+                // Quantity controls appear ONLY when item exists in cart
+                if qty > 0 {
+                    HStack(spacing: 10) {
+                        Button {
+                            cart.removeOne(product)
+                        } label: {
+                            Image(systemName: "minus.circle.fill")
+                                .font(.system(size: 22))
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+
+                        Text("\(qty)")
+                            .font(.system(size: 16, weight: .semibold))
+                            .frame(minWidth: 24)
+
+                        Button {
+                            cart.add(product, qty: 1)
+                        } label: {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 22))
+                                .foregroundStyle(Color.primary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .background(Color(.systemGray6))
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+
+                // Main CTA: Add once OR View Cart (no increment by repeated taps)
+                Button {
+                    if qty == 0 {
+                        // ✅ First time only: add product (qty=1)
+                        cart.add(product, qty: 1)
+                        
+                        // Lightweight haptic feedback
+                        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                        impactFeedback.impactOccurred()
+                    } else {
+                        // ✅ After added: go to cart (NOT re-adding)
+                        router.popToRoot()
+                        withAnimation {
+                            uiState.selectedTab = .cart
+                        }
+                    }
+                } label: {
+                    Text(qty == 0 ? (isAr ? "أضف إلى السلة" : "Add to Cart") : (isAr ? "عرض السلة" : "View Cart"))
+                        .font(.system(size: 16, weight: .semibold))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 52)
+                }
+                .foregroundStyle(qty == 0 ? Color.primary : Color.white)
+                .background(
+                    Group {
+                        if qty == 0 {
+                            Color(.systemGreen).opacity(0.18)
+                        } else {
+                            Color(.systemGreen)
+                        }
+                    }
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 10)
         }
-        .background(Color(.systemBackground))
+        .background(.ultraThinMaterial)
     }
 }
+
 
 #Preview {
     NavigationStack {
@@ -158,5 +174,6 @@ struct ProductDetailsView: View {
         ))
         .environmentObject(TomoCartManager())
         .environmentObject(LanguageManager())
+        .environmentObject(AppUIState())
     }
 }

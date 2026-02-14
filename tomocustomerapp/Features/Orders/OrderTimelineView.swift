@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Order status timeline view (mock-ready for timestamps)
 struct OrderTimelineView: View {
     let status: OrderStatus
     let isAr: Bool
@@ -7,27 +8,82 @@ struct OrderTimelineView: View {
     private let flow: [OrderStatus] = [.placed, .confirmed, .preparing, .readyForPickup, .outForDelivery, .delivered]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            ForEach(flow, id: \.self) { s in
-                let done = isCompleted(step: s)
-                HStack(spacing: 10) {
-                    Circle()
-                        .frame(width: 10, height: 10)
-                        .opacity(done ? 1 : 0.25)
-
-                    Text(isAr ? s.titleAr : s.titleEn)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(done ? .primary : .secondary)
-
+        VStack(alignment: .leading, spacing: 12) {
+            Text(isAr ? "حالة الطلب" : "Order Status")
+                .font(.system(size: 14, weight: .bold))
+                .padding(.horizontal, 4)
+            
+            ForEach(flow, id: \.self) { step in
+                let isCurrent = isCurrentStep(step: step)
+                let isDone = isCompleted(step: step)
+                
+                HStack(spacing: 12) {
+                    // Status indicator
+                    ZStack {
+                        Circle()
+                            .fill(isDone ? Color.green : (isCurrent ? Color.orange : Color.gray.opacity(0.3)))
+                            .frame(width: 20, height: 20)
+                        
+                        if isDone {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(.white)
+                        } else if isCurrent {
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 8, height: 8)
+                        }
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(isAr ? step.titleAr : step.titleEn)
+                            .font(.system(size: 13, weight: isCurrent ? .bold : .semibold))
+                            .foregroundColor(isCurrent ? .primary : (isDone ? .primary : .secondary))
+                        
+                        // Optional timestamp placeholder (mock-ready)
+                        if isCurrent || isDone {
+                            Text(isAr ? "—" : "—")
+                                .font(.system(size: 11, weight: .regular))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    
                     Spacer()
                 }
+                .padding(.vertical, 4)
+            }
+            
+            // Cancelled state
+            if status == .cancelled {
+                HStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.red)
+                            .frame(width: 20, height: 20)
+                        
+                        Image(systemName: "xmark")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    
+                    Text(isAr ? OrderStatus.cancelled.titleAr : OrderStatus.cancelled.titleEn)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(.red)
+                    
+                    Spacer()
+                }
+                .padding(.vertical, 4)
             }
         }
-        .padding(12)
+        .padding(14)
         .background(Color(.secondarySystemBackground))
         .cornerRadius(16)
     }
 
+    private func isCurrentStep(step: OrderStatus) -> Bool {
+        return step == status && status != .cancelled
+    }
+    
     private func isCompleted(step: OrderStatus) -> Bool {
         // Safe handling: if status is not in flow, default to false
         guard let curIndex = flow.firstIndex(of: status),
@@ -37,6 +93,6 @@ struct OrderTimelineView: View {
             // Default: show as incomplete if status unknown
             return false
         }
-        return stepIndex <= curIndex
+        return stepIndex < curIndex
     }
 }

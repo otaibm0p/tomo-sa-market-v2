@@ -55,7 +55,7 @@ struct ContentView: View {
         .accentColor(Color(red: 0.2, green: 0.6, blue: 0.3))
         .toolbarBackground(.visible, for: .tabBar)
         .toolbarBackground(Color.white, for: .tabBar)
-        .onChange(of: uiState.selectedTab) { _ in
+        .onChange(of: uiState.selectedTab) { _, _ in
             router.reset()
         }
         .environmentObject(languageManager)
