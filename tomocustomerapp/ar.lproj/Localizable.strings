@@ -39,3 +39,21 @@
 "home_categories" = "الفئات";
 "home_featured_products" = "المنتجات المميزة";
 "home_see_all" = "عرض الكل";
+
+/* Search Screen */
+"search_empty_title" = "ابدأ البحث";
+"search_empty_subtitle" = "أدخل اسم المنتج للعثور على ما تبحث عنه";
+"search_no_results" = "لا توجد نتائج";
+"search_no_results_subtitle" = "جرب البحث بكلمات مختلفة";
+
+/* Cart Screen */
+"cart_empty_title" = "السلة فارغة";
+"cart_empty_subtitle" = "أضف منتجات إلى السلة لرؤيتها هنا";
+"cart_total" = "المجموع";
+"cart_checkout" = "إتمام الطلب";
+
+/* Orders Screen */
+"orders_empty_title" = "لا توجد طلبات";
+"orders_empty_subtitle" = "سوف تظهر سجل طلباتك هنا";
+"orders_order_number" = "طلب";
+"orders_items" = "منتج";

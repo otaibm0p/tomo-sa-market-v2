@@ -39,3 +39,21 @@
 "home_categories" = "Categories";
 "home_featured_products" = "Featured Products";
 "home_see_all" = "See All";
+
+/* Search Screen */
+"search_empty_title" = "Start Searching";
+"search_empty_subtitle" = "Enter a product name to find what you're looking for";
+"search_no_results" = "No Results Found";
+"search_no_results_subtitle" = "Try searching with different keywords";
+
+/* Cart Screen */
+"cart_empty_title" = "Your Cart is Empty";
+"cart_empty_subtitle" = "Add items to your cart to see them here";
+"cart_total" = "Total";
+"cart_checkout" = "Checkout";
+
+/* Orders Screen */
+"orders_empty_title" = "No Orders Yet";
+"orders_empty_subtitle" = "Your order history will appear here";
+"orders_order_number" = "Order";
+"orders_items" = "item(s)";

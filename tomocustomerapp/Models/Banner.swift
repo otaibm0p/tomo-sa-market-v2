@@ -1,16 +1,14 @@
-//
-//  Banner.swift
-//  tomocustomerapp
-//
-//  Created by user294169 on 2/9/26.
-//
-
 import Foundation
 
-struct Banner: Identifiable, Codable {
-    let id: Int
+struct Banner: Identifiable {
+    let id = UUID()
     let title: String
-    let imageUrl: String
-    let linkUrl: String?
-    let isActive: Bool
+}
+
+extension Banner {
+    static let mock: [Banner] = [
+        Banner(title: "Special Offer"),
+        Banner(title: "New Arrivals"),
+        Banner(title: "Flash Sale")
+    ]
 }

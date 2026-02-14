@@ -1,0 +1,24 @@
+[
+  {
+    "id": "p_banana_001",
+    "sku": "BAN-001",
+    "nameAr": "موز",
+    "nameEn": "Banana",
+    "descriptionAr": "منتج عالي الجودة مناسب للتوصيل السريع داخل الدارك ستور.",
+    "descriptionEn": "High quality product suitable for fast delivery inside the dark store.",
+    "price": 3.0,
+    "currency": "SAR",
+    "unit": "kg",
+    "isAvailable": true,
+    "isFeatured": true,
+    "categoryId": "c_fruits",
+    "images": [
+      "https://picsum.photos/seed/banana1/900/700",
+      "https://picsum.photos/seed/banana2/900/700",
+      "https://picsum.photos/seed/banana3/900/700",
+      "https://picsum.photos/seed/banana4/900/700",
+      "https://picsum.photos/seed/banana5/900/700"
+    ],
+    "primaryImage": "https://picsum.photos/seed/banana0/900/700"
+  }
+]

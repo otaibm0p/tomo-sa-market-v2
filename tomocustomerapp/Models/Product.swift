@@ -1,33 +1,73 @@
-//
-//  Product.swift
-//  tomocustomerapp
-//
-//  Created by user294169 on 2/9/26.
-//
-
 import Foundation
 
-struct Product: Identifiable, Codable {
-    let id: Int
-    let name: String
-    let description: String?
-    let price: Double
-    let originalPrice: Double?
-    let imageUrl: String
-    let categoryId: Int
-    let isAvailable: Bool
-    let stock: Int
-    
-    // Computed property for discount percentage
-    var discountPercentage: Int? {
-        guard let originalPrice = originalPrice, originalPrice > price else {
-            return nil
-        }
-        return Int(((originalPrice - price) / originalPrice) * 100)
+struct Product: Identifiable, Codable, Hashable {
+    var id: UUID
+    var name: String
+    var price: Double
+    var unit: String
+    var image: String
+    var oldPrice: Double?
+
+    // ✅ init مرن: يدعم استدعاءات قديمة (بدون id/image/oldPrice) ويدعم unit
+    init(
+        name: String,
+        price: Double,
+        unit: String = "",
+        image: String = "cart",
+        oldPrice: Double? = nil,
+        id: UUID = UUID()
+    ) {
+        self.id = id
+        self.name = name
+        self.price = price
+        self.unit = unit
+        self.image = image
+        self.oldPrice = oldPrice
     }
-    
-    // Computed property for formatted price
-    var formattedPrice: String {
-        return String(format: "%.2f", price)
+
+    // ✅ Mock data
+    static let mockFeatured: [Product] = [
+        Product(name: "Banana", price: 3.00, unit: "kg", image: "banana", oldPrice: 4.00),
+        Product(name: "Apple",  price: 5.50, unit: "kg", image: "apple"),
+        Product(name: "Milk",   price: 6.00, unit: "1L", image: "milk"),
+        Product(name: "Bread",  price: 2.50, unit: "pc", image: "bread")
+    ]
+}
+
+// MARK: - Product to AdminProduct Conversion
+
+extension Product {
+    func toAdminProduct() -> AdminProduct {
+        AdminProduct(
+            id: id.uuidString,
+            sku: nil,
+            nameAr: name,
+            nameEn: name,
+            descriptionAr: "منتج عالي الجودة",
+            descriptionEn: "High quality product",
+            price: price,
+            currency: "SAR",
+            unit: unit,
+            isAvailable: true,
+            isFeatured: true,
+            categoryId: nil,
+            images: [image],
+            primaryImage: image
+        )
+    }
+}
+
+// MARK: - AdminProduct to Product Conversion
+
+extension AdminProduct {
+    func toProduct() -> Product {
+        Product(
+            name: nameEn,
+            price: price,
+            unit: unit,
+            image: resolvedPrimaryImage ?? "cart",
+            oldPrice: nil,
+            id: UUID(uuidString: id) ?? UUID()
+        )
     }
 }
