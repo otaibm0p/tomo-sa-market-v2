@@ -18,7 +18,7 @@ struct ProfileView: View {
     @State private var pushSupport = false
 
     var body: some View {
-        ScrollView {
+            ScrollView {
                 VStack(spacing: 14) {
                     header
 

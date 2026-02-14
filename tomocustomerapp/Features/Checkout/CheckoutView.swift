@@ -60,19 +60,19 @@ struct CheckoutView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 // Cart has items - show checkout form
-                ScrollView {
-                    VStack(spacing: 14) {
-                        CheckoutAddressCard(checkout: checkout)
-                        CheckoutDeliverySlotCard(checkout: checkout)
-                        CheckoutPaymentCard(checkout: checkout)
+        ScrollView {
+            VStack(spacing: 14) {
+                CheckoutAddressCard(checkout: checkout)
+                CheckoutDeliverySlotCard(checkout: checkout)
+                CheckoutPaymentCard(checkout: checkout)
 
-                        CheckoutSummaryCard(
-                            subtotal: cart.subtotal,
-                            deliveryFee: checkout.selectedSlot?.fee ?? 0,
-                            currency: cart.items.first?.product.currency ?? "SAR"
-                        )
+                CheckoutSummaryCard(
+                    subtotal: cart.subtotal,
+                    deliveryFee: checkout.selectedSlot?.fee ?? 0,
+                    currency: cart.items.first?.product.currency ?? "SAR"
+                )
 
-                        Button {
+                Button {
                             let draft = checkout.buildDraft(from: cart)
                             // Create order from draft
                             let newOrder = orderStore.createOrderFromDraft(draft)
@@ -80,38 +80,38 @@ struct CheckoutView: View {
                             cart.clear()
                             // Navigate to success
                             self.draft = draft
-                            showSuccess = true
-                        } label: {
+                    showSuccess = true
+                } label: {
                             Text(isAr ? "تأكيد الطلب" : "Confirm Order")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity, minHeight: 52)
-                                .background(Color.green)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                        }
-                        .disabled(!checkout.canPlaceOrder(cart: cart))
-                        .opacity(checkout.canPlaceOrder(cart: cart) ? 1 : 0.5)
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 52)
+                        .background(Color.green)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                }
+                .disabled(!checkout.canPlaceOrder(cart: cart))
+                .opacity(checkout.canPlaceOrder(cart: cart) ? 1 : 0.5)
 
-                        Button {
+                Button {
                             // ⭐️ Navigation Hard Fix — Global UX
                             withAnimation(.easeInOut(duration: 0.25)) {
                                 uiState.selectedTab = .home
                             }
                             // Dismiss checkout if presented via route
-                            dismiss()
-                        } label: {
-                            HStack {
-                                Image(systemName: languageManager.chevronBack)
+                    dismiss()
+                } label: {
+                    HStack {
+                        Image(systemName: languageManager.chevronBack)
                                 Text(isAr ? "متابعة التسوق" : "Continue Shopping")
-                            }
-                            .font(.headline)
-                            .frame(maxWidth: .infinity, minHeight: 50)
-                            .background(.thinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                        }
                     }
-                    .padding()
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, minHeight: 50)
+                    .background(.thinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
+            }
+            .padding()
+        }
             }
         }
         .navigationTitle(isAr ? "الدفع" : "Checkout")

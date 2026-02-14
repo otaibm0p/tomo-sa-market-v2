@@ -105,7 +105,7 @@ struct CartView: View {
                     Button {
                         // ⭐️ Navigation Hard Fix — Global UX
                         withAnimation(.easeInOut(duration: 0.25)) {
-                            uiState.selectedTab = .home
+                        uiState.selectedTab = .home
                         }
                     } label: {
                         HStack(spacing: 6) {
@@ -174,7 +174,7 @@ struct ContinueShoppingButton: View {
         Button {
             // ⭐️ Navigation Hard Fix — Global UX
             withAnimation(.easeInOut(duration: 0.25)) {
-                uiState.selectedTab = .home
+            uiState.selectedTab = .home
             }
         } label: {
             HStack {

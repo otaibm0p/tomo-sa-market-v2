@@ -27,15 +27,15 @@ struct CheckoutSuccessView: View {
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(Color(.systemGreen))
             }
-            
+
             Text(isAr ? "تم إنشاء الطلب" : "Order Placed!")
                 .font(.system(size: 24, weight: .bold))
-            
+
             if let d = draft {
                 Text(isAr ? "رقم الطلب: \(d.id)" : "Order #\(d.id)")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.secondary)
-                
+
                 Text("\(isAr ? "الإجمالي: " : "Total: ")\(d.totalText)")
                     .font(.system(size: 16, weight: .bold))
             }
@@ -45,7 +45,7 @@ struct CheckoutSuccessView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            
+
             Spacer()
             
             VStack(spacing: 10) {

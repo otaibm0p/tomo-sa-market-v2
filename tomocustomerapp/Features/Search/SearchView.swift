@@ -27,7 +27,7 @@ struct SearchView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
+            VStack(spacing: 0) {
                 // Search Bar
                 searchBarSection
                     .padding(.top, 8)
@@ -48,7 +48,7 @@ struct SearchView: View {
             .navigationTitle("search_title".localized)
             .navigationBarTitleDisplayMode(.large)
             .environment(\.layoutDirection, languageManager.currentLanguage.isRTL ? .rightToLeft : .leftToRight)
-            .id(languageManager.currentLanguage)
+        .id(languageManager.currentLanguage)
     }
     
     // MARK: - Search Bar
